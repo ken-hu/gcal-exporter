@@ -1,7 +1,9 @@
 # Google Calendar Exporter
-Export Google Calendar to Google Spreadsheets with _gcal-exporter_ in Java
 
-All the methods in Gsheet.java and Gspread.java are reusable.
+[![Build Status](https://travis-ci.org/ken-hu/gcal-exporter.svg?branch=master)](https://travis-ci.org/ken-hu/gcal-exporter)
+
+Export Google Calendar to Google Spreadsheets with _gcal-exporter_ in Java. All the methods in Gsheet.java and Gspread.java are reusable.
+
 
 ## Prerequisites
 
@@ -43,15 +45,15 @@ List<List<String>> data = gcal.getDataFromCalendar(CalendarListEntry calendar, I
 
 ## Google Spreadsheets API
 
-### Create a Spreadsheet
+### Get a Spreadsheet
 ```java
 Gsheet gsheet = new Gsheet();
-spreadsheet = gsheet.createNewSpreadsheet(String spreadsheetTitle);
-```
 
-### Find a Spreadsheet
-```java
-gsheet.getSpreadsheet(String spreadsheetId);
+// Create a spreadsheet
+spreadsheet = gsheet.createNewSpreadsheet(String spreadsheetTitle);
+
+// Find a spreadsheet
+spreadsheet = gsheet.getSpreadsheet(String spreadsheetId);
 ```
 
 ### Print Information of a Spreadsheet
@@ -68,13 +70,12 @@ gsheet.printSheetData(Spreadsheet spreadsheet, String sheetTitle);
 gsheet.updateSpreadsheetTitle(Spreadsheet spreadsheet, String spreadsheetTitle);
 ```
 
-### Add a New Sheet
+### Get a Sheet
 ```java
+// Add a sheet
 newSheet = gsheet.addNewSheet(Spreadsheet spreadsheet, String sheetTitle);
-```
 
-### Find a Sheet
-```java
+// Find a sheet
 sheet = gsheet.findSheet(Spreadsheet spreadsheet, String sheetTitle);
 ```
 
