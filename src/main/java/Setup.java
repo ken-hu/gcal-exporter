@@ -18,21 +18,21 @@ import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.sheets.v4.SheetsScopes;
 
 public class Setup {
-	
+
     /** Application name. */
     public static final String APPLICATION_NAME =
-        "Google Calendar Exporter";
+            "Google Calendar Exporter";
 
     /** Directory to store user credentials for this application. */
     public static final java.io.File DATA_STORE_DIR = new java.io.File(
-        System.getProperty("user.home"), ".credentials/calendar-exporter");
+            System.getProperty("user.home"), ".credentials/calendar-exporter");
 
     /** Global instance of the {@link FileDataStoreFactory}. */
     public static FileDataStoreFactory DATA_STORE_FACTORY;
 
     /** Global instance of the JSON factory. */
     public static final JsonFactory JSON_FACTORY =
-        JacksonFactory.getDefaultInstance();
+            JacksonFactory.getDefaultInstance();
 
     /** Global instance of the HTTP transport. */
     public static HttpTransport HTTP_TRANSPORT;
@@ -43,7 +43,7 @@ public class Setup {
      * at ~/.credentials/calendar-exporter
      */
     public static final List<String> SCOPES =
-        Arrays.asList(CalendarScopes.CALENDAR_READONLY, SheetsScopes.SPREADSHEETS);
+            Arrays.asList(CalendarScopes.CALENDAR_READONLY, SheetsScopes.SPREADSHEETS);
 
     static {
         try {
@@ -54,7 +54,7 @@ public class Setup {
             System.exit(1);
         }
     }
-    
+
     /**
      * Creates an authorized Credential object.
      * @return an authorized Credential object.
@@ -63,9 +63,9 @@ public class Setup {
     public static Credential authorize() throws IOException {
         // Load client secrets.
         InputStream in =
-            Gcal.class.getResourceAsStream("/client_secret.json");
+                Gcal.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =
-            GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
+                GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow =
@@ -75,10 +75,10 @@ public class Setup {
                 .setAccessType("offline")
                 .build();
         Credential credential = new AuthorizationCodeInstalledApp(
-            flow, new LocalServerReceiver()).authorize("user");
+                flow, new LocalServerReceiver()).authorize("user");
         System.out.println(
                 "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
         return credential;
     }
-	
+
 }
