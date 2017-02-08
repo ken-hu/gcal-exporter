@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
+import java.util.TimeZone;
 
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.sheets.v4.model.Sheet;
@@ -14,6 +15,7 @@ public class Exporter {
 
     public static void exportGcalToGsheet(String start, String end) throws IOException {
         Date timeStart = null, timeEnd = null;
+        TimeZone.setDefault(TimeZone.getTimeZone(Gcal.timeZone));
         SimpleDateFormat dateFormater = new SimpleDateFormat("yy.MM.dd");
         try {
             timeStart = dateFormater.parse(start);
@@ -43,6 +45,7 @@ public class Exporter {
             gsheet.sortByColumn(spreadsheet, newSheet, 1, 2, "ASCENDING");
             gsheet.resizeColumns(spreadsheet, newSheet);
         }
+        System.out.println("Succeeded!");
     }
 
     public static void main(String[] args) throws IOException {

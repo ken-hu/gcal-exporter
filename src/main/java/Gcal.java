@@ -18,10 +18,10 @@ public class Gcal {
 
     private static com.google.api.services.calendar.Calendar service;
     private static CalendarList calendarList;
-    private static String timeZone;
     private DateTime timeStart;
     private DateTime timeEnd;
     private Integer MAX_RESULTS = 2500;
+    public static String timeZone;
 
     public Gcal(Date timeStart, Date timeEnd) {
         TimeZone.setDefault(TimeZone.getTimeZone(Gcal.timeZone));
@@ -118,6 +118,7 @@ public class Gcal {
     }
 
     public List<List<String>> getDataFromCalendar(CalendarListEntry calendar, Integer numberOfEvents) throws IOException {
+        System.out.printf("Extracting data from %s to %s\n", this.timeStart, this.timeEnd);
         Events events = getEvents(calendar.getId(), numberOfEvents);
         List<Event> items = events.getItems();
         List<List<String>> data = new ArrayList<>();
