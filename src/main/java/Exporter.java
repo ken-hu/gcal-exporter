@@ -35,7 +35,7 @@ public class Exporter {
         for (CalendarListEntry calendar : calendars) {
             String calendarName = calendar.getSummary();
 
-            List<List<String>> data = gcal.getDataFromCalendar(calendar);
+            List<Gcal.Row> data = gcal.getDataFromCalendar(calendar);
 
             List<String> rowData = Arrays.asList("Event", "Start", "End", "Duration");
             Sheet newSheet = gsheet.addNewSheet(spreadsheet, calendarName);
@@ -45,6 +45,7 @@ public class Exporter {
             gsheet.sortByColumn(spreadsheet, newSheet, 1, 2, "ASCENDING");
             gsheet.resizeColumns(spreadsheet, newSheet);
         }
+        gsheet.deleteSheet(spreadsheet, 0);
         System.out.println("Succeeded!");
     }
 

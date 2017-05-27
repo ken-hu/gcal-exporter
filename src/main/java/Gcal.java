@@ -1,7 +1,6 @@
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +30,76 @@ public class Gcal {
         cal.setTime(timeEnd);
         cal.add(Calendar.DATE, 1);
         this.timeEnd = new DateTime(cal.getTime());
+    }
+
+    public class Row {
+        private String eventName;
+        private String eventStartData;
+        private String eventEndData;
+        private Double duration;
+
+        public  Row (String eventName, String eventStartData, String eventEndData, Double duration) {
+            this.setEventName(eventName);
+            this.setEventStartData(eventStartData);
+            this.setEventEndData(eventEndData);
+            this.setDuration(duration);
+        }
+
+        /**
+         * @return the eventEndData
+         */
+        public String getEventEndData() {
+            return eventEndData;
+        }
+
+        /**
+         * @param eventEndData the eventEndData to set
+         */
+        public void setEventEndData(String eventEndData) {
+            this.eventEndData = eventEndData;
+        }
+
+        /**
+         * @return the eventName
+         */
+        public String getEventName() {
+            return eventName;
+        }
+
+        /**
+         * @param eventName the eventName to set
+         */
+        public void setEventName(String eventName) {
+            this.eventName = eventName;
+        }
+
+        /**
+         * @return the eventStartData
+         */
+        public String getEventStartData() {
+            return eventStartData;
+        }
+
+        /**
+         * @param eventStartData the eventStartData to set
+         */
+        public void setEventStartData(String eventStartData) {
+            this.eventStartData = eventStartData;
+        }
+
+        /**
+         * @return the duration
+         */
+        public Double getDuration() {
+            return duration;
+        }
+
+        /**
+         * @param duration the duration to set
+         */
+        public void setDuration(Double duration) {
+            this.duration = duration;
+        }
     }
 
     /**
@@ -98,11 +167,9 @@ public class Gcal {
 
             System.out.printf("In Calendar %s, Events from %s to %s\n", calendarName, this.timeStart, this.timeEnd);
             System.out.printf("Calendar ID: %s\n", calendarId);
-            List<List<String>> events = getDataFromCalendar(calendarListEntry, MAX_RESULTS);
-            for (List<String> rows : events) {
-                for (String row : rows) {
-                    System.out.println(row);
-                }
+            List<Row> events = getDataFromCalendar(calendarListEntry, MAX_RESULTS);
+            for (Row row : events) {
+                System.out.println(row);
             }
             System.out.println();
         }
@@ -113,15 +180,15 @@ public class Gcal {
      * @return List<List<eventName, eventStartData, eventEndData, duration>>
      * @throws IOException
      */
-    public List<List<String>> getDataFromCalendar(CalendarListEntry calendar) throws IOException {
+    public List<Row> getDataFromCalendar(CalendarListEntry calendar) throws IOException {
         return getDataFromCalendar(calendar, MAX_RESULTS);
     }
 
-    public List<List<String>> getDataFromCalendar(CalendarListEntry calendar, Integer numberOfEvents) throws IOException {
+    public List<Row> getDataFromCalendar(CalendarListEntry calendar, Integer numberOfEvents) throws IOException {
         System.out.printf("Extracting data from %s to %s\n", this.timeStart, this.timeEnd);
         Events events = getEvents(calendar.getId(), numberOfEvents);
         List<Event> items = events.getItems();
-        List<List<String>> data = new ArrayList<>();
+        List<Row> data = new ArrayList<>();
         if (items.size() == 0) {
             System.out.println("No events found.");
         } else {
@@ -138,11 +205,10 @@ public class Gcal {
                 String eventName = event.getSummary();
                 String eventStartData = dateFormater.format(start.getValue());
                 String eventEndData = dateFormater.format(end.getValue());
-                String duration = doubleToString(interval/3.6e6);
-                List<String> row =
-                        Arrays.asList(eventName, eventStartData, eventEndData, duration);
+                Double duration = format(interval/3.6e6);
+                Row row = new Row(eventName, eventStartData, eventEndData, duration);
                 data.add(row);
-                //System.out.printf("%s %s %s %s\n", eventName, eventStartData, eventEndData, duration);
+                //System.out.printf("%s %s %s %.2f\n", eventName, eventStartData, eventEndData, duration);
             }
         }
         return data;
@@ -160,10 +226,10 @@ public class Gcal {
     }
 
     // Get rid of unnecessary 0 tailings.
-    private String doubleToString(double d) {
+    private Double format(double d) {
         if (d == (long)d) {
-            return String.format("%d", (long)d);
+            return Double.parseDouble(String.format("%d", (long)d));
         }
-        return String.format("%.1f", d);
+        return Double.parseDouble(String.format("%.1f", d));
     }
 }

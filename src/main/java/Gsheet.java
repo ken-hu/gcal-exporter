@@ -12,6 +12,7 @@ import com.google.api.services.sheets.v4.model.AutoResizeDimensionsRequest;
 import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetRequest;
 import com.google.api.services.sheets.v4.model.BatchUpdateSpreadsheetResponse;
 import com.google.api.services.sheets.v4.model.CellData;
+import com.google.api.services.sheets.v4.model.DeleteSheetRequest;
 import com.google.api.services.sheets.v4.model.DimensionRange;
 import com.google.api.services.sheets.v4.model.ExtendedValue;
 import com.google.api.services.sheets.v4.model.GridCoordinate;
@@ -157,6 +158,18 @@ public class Gsheet {
     }
 
     /**
+     * Delete a sheet in a specific spreadsheet.
+     * @throws IOException
+     */
+    public void deleteSheet(Spreadsheet spreadsheet, Integer sheetId) throws IOException {
+        Request request = new Request()
+                .setDeleteSheet(new DeleteSheetRequest()
+                        .setSheetId(sheetId));
+        postRequest(spreadsheet, request);
+        System.out.printf("Sheet ID \"%s\" is deleted\n", sheetId);
+    }
+
+    /**
      * @return The sheet in the spreadsheet.
      * @throws IOException
      */
@@ -215,20 +228,19 @@ public class Gsheet {
      * Insert the values to the cells starting from left corner.
      * @returns a request of insert the values
      */
-    private Request insertValues(Integer sheetId, List<List<String>> data) {
+    private Request insertValues(Integer sheetId, List<Gcal.Row> data) {
         GridCoordinate grid = new GridCoordinate()
                 .setSheetId(sheetId)
                 .setRowIndex(1)
                 .setColumnIndex(0);
 
         List<RowData> rowData = new ArrayList<>();
-        for (List<String> row : data) {
+        for (Gcal.Row row : data) {
             List<CellData> cellData = new ArrayList<>();
-            for (String cell : row) {
-                cellData.add(new CellData()
-                        .setUserEnteredValue(new ExtendedValue()
-                                .setStringValue(cell)));
-            }
+            cellData.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(row.getEventName())));
+            cellData.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(row.getEventStartData())));
+            cellData.add(new CellData().setUserEnteredValue(new ExtendedValue().setStringValue(row.getEventEndData())));
+            cellData.add(new CellData().setUserEnteredValue(new ExtendedValue().setNumberValue(row.getDuration())));
             rowData.add(new RowData().setValues(cellData));
         }
 
@@ -244,12 +256,12 @@ public class Gsheet {
      * Insert a matrix of strings to a sheet starting from left corner.
      * @throws IOException
      */
-    public void importData(Spreadsheet spreadsheet, List<List<String>> data) throws IOException {
+    public void importData(Spreadsheet spreadsheet, List<Gcal.Row> data) throws IOException {
         Sheet sheet = spreadsheet.getSheets().get(0);
         importData(spreadsheet, sheet, data);
     }
 
-    public void importData(Spreadsheet spreadsheet, Sheet sheet, List<List<String>> data) throws IOException {
+    public void importData(Spreadsheet spreadsheet, Sheet sheet, List<Gcal.Row> data) throws IOException {
         Integer	sheetId = sheet.getProperties().getSheetId();
         List<Request> requests = new ArrayList<Request>();
         // Default new sheet has 1000 rows,
