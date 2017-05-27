@@ -79,6 +79,11 @@ newSheet = gsheet.addNewSheet(Spreadsheet spreadsheet, String sheetTitle);
 sheet = gsheet.findSheet(Spreadsheet spreadsheet, String sheetTitle);
 ```
 
+### Delete a Sheet
+```java
+gsheet.deleteSheet(Spreadsheet spreadsheet, Integer sheetId);
+```
+
 ### Clear a Sheet
 ```java
 gsheet.clearSheet(Spreadsheet spreadsheet, Sheet sheet);
