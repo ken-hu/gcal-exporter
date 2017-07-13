@@ -34,7 +34,7 @@ apply plugin: 'java'
 apply plugin: 'application'
 apply plugin: 'eclipse'
 
-mainClassName = 'Exporter'
+mainClassName = 'exporter.Exporter'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 version = '1.0'
@@ -45,6 +45,17 @@ repositories {
 
 run{
  standardInput = System.in
+}
+
+task fatJar(type: Jar) {
+	manifest {
+		attributes "Main-Class": "$mainClassName"
+	}
+
+	from {
+		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+	}
+	with jar
 }
 
 dependencies {
