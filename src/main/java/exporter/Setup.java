@@ -18,8 +18,12 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.sheets.v4.SheetsScopes;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Setup {
+
+    private static final Logger logger = LoggerFactory.getLogger(Setup.class);
 
     /** Application name. */
     public static final String APPLICATION_NAME =
@@ -78,7 +82,7 @@ public class Setup {
                 .build();
         Credential credential = new AuthorizationCodeInstalledApp(
                 flow, new LocalServerReceiver()).authorize("user");
-        System.out.println(
+        logger.info(
                 "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
         return credential;
     }

@@ -30,8 +30,12 @@ import com.google.api.services.sheets.v4.model.SpreadsheetProperties;
 import com.google.api.services.sheets.v4.model.UpdateCellsRequest;
 import com.google.api.services.sheets.v4.model.UpdateSpreadsheetPropertiesRequest;
 import com.google.api.services.sheets.v4.model.ValueRange;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Gsheet {
+
+    private static final Logger logger = LoggerFactory.getLogger(Gsheet.class);
 
     private static Sheets service;
     public Gsheet() {}
@@ -83,7 +87,7 @@ public class Gsheet {
     public Spreadsheet createNewSpreadsheet(String spreadsheetTitle) throws IOException {
         Spreadsheet newSpreadsheet = service.spreadsheets().create(null).execute();
         updateSpreadsheetTitle(newSpreadsheet, spreadsheetTitle);
-        System.out.printf("New SpreadsheetID is %s\n", newSpreadsheet.getSpreadsheetId());
+        logger.info("New Spreadsheet is created in Google Drive, ID: {}", newSpreadsheet.getSpreadsheetId());
         return newSpreadsheet;
     }
 
@@ -104,7 +108,7 @@ public class Gsheet {
         for (Sheet sheet : sheetList) {
             String sheetName = sheet.getProperties().getTitle();
             Integer sheetId = sheet.getProperties().getSheetId();
-            System.out.printf("%s %d\n", sheetName, sheetId);
+            logger.info("{}: {}", sheetName, sheetId);
         }
     }
 
@@ -118,10 +122,10 @@ public class Gsheet {
                 .execute();
         List<List<Object>> values = response.getValues();
         if (values == null || values.size() == 0) {
-            System.out.println("No data found.");
+            System.err.println("No data found.");
         } else {
             for (List<Object> row : values) {
-                System.out.printf("%s\n", row);
+                System.out.println(row);
             }
         }
     }
@@ -155,7 +159,7 @@ public class Gsheet {
         BatchUpdateSpreadsheetResponse response = postRequest(spreadsheet, request);
         Spreadsheet updatedSpreadsheet = response.getUpdatedSpreadsheet(); // Critical
         Sheet sheet = findSheet(updatedSpreadsheet, sheetTitle);
-        System.out.printf("Sheet \"%s\" is created\n", sheetTitle);
+        logger.info("Sheet {} created.", sheetTitle);
         return sheet;
     }
 
@@ -168,7 +172,7 @@ public class Gsheet {
                 .setDeleteSheet(new DeleteSheetRequest()
                         .setSheetId(sheetId));
         postRequest(spreadsheet, request);
-        System.out.printf("Sheet ID \"%s\" is deleted\n", sheetId);
+        logger.info("Sheet ID {} deleted.", sheetId);
     }
 
     /**
@@ -182,8 +186,7 @@ public class Gsheet {
                 return sheet;
             }
         }
-        System.err.printf("Sheet %s is NOT found\n", sheetTitle);
-        System.err.printf("There are %d worksheets\n", sheetList.size());
+        logger.error("Sheet {} NOT found.", sheetTitle);
         return null;
     }
 
@@ -273,6 +276,7 @@ public class Gsheet {
         }
         requests.add(insertValues(sheetId, data));
         postRequests(spreadsheet, requests);
+        logger.info("Events imported.");
     }
 
     private Request appendEmptyRows(Integer sheetId, Integer length) throws IOException {

@@ -44,18 +44,18 @@ repositories {
 }
 
 run{
- standardInput = System.in
+    standardInput = System.in
 }
 
 task fatJar(type: Jar) {
-	manifest {
-		attributes "Main-Class": "$mainClassName"
-	}
+    manifest {
+        attributes "Main-Class": "$mainClassName"
+    }
 
-	from {
-		configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-	}
-	with jar
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+    with jar
 }
 
 dependencies {
@@ -63,4 +63,7 @@ dependencies {
     compile 'com.google.oauth-client:google-oauth-client-jetty:1.22.0'
     compile 'com.google.apis:google-api-services-calendar:v3-rev225-1.22.0'
     compile 'com.google.apis:google-api-services-sheets:v4-rev38-1.22.0'
+    compile 'org.slf4j:slf4j-api:1.7.9'
+    compile 'ch.qos.logback:logback-classic:1.2.3'
+    compile 'org.codehaus.groovy:groovy:2.4.12'
 }

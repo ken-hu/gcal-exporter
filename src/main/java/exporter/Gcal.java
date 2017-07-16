@@ -14,8 +14,12 @@ import com.google.api.services.calendar.model.CalendarList;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Gcal {
+
+    private static final Logger logger = LoggerFactory.getLogger(Gcal.class);
 
     private static com.google.api.services.calendar.Calendar service;
     private static CalendarList calendarList;
@@ -142,7 +146,7 @@ public class Gcal {
      * that are present on the user's calendar list.
      * @throws IOException
      */
-    public void printCalendarInfo() throws IOException {
+    public void getCalendarInfo() throws IOException {
         List<CalendarListEntry> calendars = Gcal.calendarList.getItems();
         String calendarName, calendarId;
 
@@ -187,12 +191,12 @@ public class Gcal {
     }
 
     public List<Row> getDataFromCalendar(CalendarListEntry calendar, Integer numberOfEvents) throws IOException {
-        System.out.printf("Extracting data from %s to %s\n", this.timeStart, this.timeEnd);
+        String calendarName = calendar.getSummary();
         Events events = getEvents(calendar.getId(), numberOfEvents);
         List<Event> items = events.getItems();
         List<Row> data = new ArrayList<>();
         if (items.size() == 0) {
-            System.out.println("No events found.");
+            logger.info("No events found in {}.", calendarName);
         } else {
             for (Event event : items) {
                 SimpleDateFormat dateFormater = new SimpleDateFormat("yyyy/MM/dd HH:mm");
@@ -213,6 +217,7 @@ public class Gcal {
                 //System.out.printf("%s %s %s %.2f\n", eventName, eventStartData, eventEndData, duration);
             }
         }
+        logger.info("{} events extracted from calendar {}.",  items.size(), calendarName);
         return data;
     }
 
