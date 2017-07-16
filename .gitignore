@@ -113,4 +113,7 @@ gradle-app.setting
 # # Work around https://youtrack.jetbrains.com/issue/IDEA-116898
 # gradle/wrapper/gradle-wrapper.properties
 
+### Google API files ###
+client_secret.json
+
 # End of https://www.gitignore.io/api/java,gradle,macos,eclipse
