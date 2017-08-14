@@ -1,6 +1,8 @@
 package exporter;
 
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -207,11 +209,13 @@ public class Gcal {
                     start = event.getStart().getDate();
                     end   = event.getEnd().getDate();
                 }
-                double interval = end.getValue() - start.getValue();
+                long interval = end.getValue() - start.getValue();
                 String eventName = event.getSummary();
                 String eventStartData = dateFormater.format(start.getValue());
                 String eventEndData = dateFormater.format(end.getValue());
-                Double duration = format(interval/3.6e6);
+                double duration = (new BigDecimal(interval).divide(
+                        new BigDecimal(3.6e6), 2, RoundingMode.HALF_UP)).
+                        doubleValue();
                 Row row = new Row(eventName, eventStartData, eventEndData, duration);
                 data.add(row);
                 //System.out.printf("%s %s %s %.2f\n", eventName, eventStartData, eventEndData, duration);
@@ -230,13 +234,5 @@ public class Gcal {
                 .setSingleEvents(true)
                 .execute();
         return events;
-    }
-
-    // Get rid of unnecessary 0 tailings.
-    private Double format(double d) {
-        if (d == (long)d) {
-            return Double.parseDouble(String.format("%d", (long)d));
-        }
-        return Double.parseDouble(String.format("%.1f", d));
     }
 }
