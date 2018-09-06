@@ -7,8 +7,8 @@ Export Google Calendar to Google Spreadsheets with _gcal-exporter_ in Java. All 
 
 ## Prerequisites
 
-* Java 1.7 or greater
-* Gradle 2.3 or greater
+* Java 1.8 or greater
+* Gradle 4.10 or greater
 
 ## Run
 
