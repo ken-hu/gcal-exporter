@@ -35,17 +35,17 @@ apply plugin: 'application'
 apply plugin: 'eclipse'
 
 mainClassName = 'exporter.Exporter'
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 version = '1.0'
 
 repositories {
     mavenCentral()
 }
 
-run{
-    standardInput = System.in
-}
+//run{
+//    standardInput = System.in
+//}
 
 task fatJar(type: Jar) {
     manifest {
@@ -67,4 +67,5 @@ dependencies {
     compile 'ch.qos.logback:logback-classic:1.2.3'
     compile 'org.codehaus.groovy:groovy:2.4.12'
     compile 'com.github.pcj:google-options:1.0.0'
+    compile 'com.google.guava:guava:26.0-jre'
 }
