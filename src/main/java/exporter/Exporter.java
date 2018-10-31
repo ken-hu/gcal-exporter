@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -13,7 +12,6 @@ import java.util.TimeZone;
 import com.google.api.services.calendar.model.CalendarListEntry;
 import com.google.api.services.sheets.v4.model.Sheet;
 import com.google.api.services.sheets.v4.model.Spreadsheet;
-import com.google.devtools.common.options.OptionsParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,29 +62,16 @@ public class Exporter {
     }
 
     public static void main(String[] args) throws IOException {
-        OptionsParser parser = OptionsParser.newOptionsParser(ExporterOptions.class);
-        parser.parseAndExitUponError(args);
-        ExporterOptions options = parser.getOptions(ExporterOptions.class);
 
-        if (options.start.isEmpty() || options.end.isEmpty()) {
-            // print usage
-            System.out.println(parser.describeOptions(Collections.<String, String>emptyMap(),
-                        OptionsParser.HelpVerbosity.LONG));
+        ExporterOptions opts = new ExporterOptions();
+
+        if (!opts.parseArgs(args)) {
             return;
         }
 
-        exportGcalToGsheet(options.start, options.end);
+        String start = opts.getTimeStart();
+        String end = opts.getTimeEnd();
 
-        //System.out.println("Please enter the start date (inclusive) yy.MM.dd: ");
-        //Scanner scanner  = new Scanner(System.in);
-        //String Startdate = scanner.next();
-        //logger.info("date entered: {}", Startdate);
-
-        //System.out.println("Please enter the end date (inclusive) yy.MM.dd: ");
-        //String EndDate = scanner.next();
-        //logger.info("date entered: {}", EndDate);
-        //scanner.close();
-
-        //exportGcalToGsheet(Startdate, EndDate);
+        exportGcalToGsheet(start, end);
     }
 }

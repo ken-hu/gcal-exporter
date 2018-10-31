@@ -13,13 +13,8 @@ Export Google Calendar to Google Spreadsheets with _gcal-exporter_ in Java. All 
 ## Run
 
 ```
-$ gradle run
-```
-
-## Creating .jar
-
-```
 $ gradle fatJar
+$ java -jar ./build/libs/gcal-exporter-1.2.jar
 ```
 After entering the start date and end date of the calendar events to export, it will open a new window or tab in the default browser window for the authorization.
 
