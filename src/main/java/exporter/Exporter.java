@@ -32,6 +32,11 @@ public class Exporter {
             System.exit(1);
         }
 
+        if (timeStart.compareTo(timeEnd) > 0) {
+            logger.error("The end date has to be after the start date.");
+            System.exit(1);
+        }
+
         Gcal gcal = new Gcal(timeStart, timeEnd);
         List<CalendarListEntry> calendars = gcal.getCalendars();
         //gcal.getCalendarInfo();
@@ -57,7 +62,9 @@ public class Exporter {
             numOfEvents += data.size();
             numOfCalendar++;
         }
-        gsheet.deleteSheet(spreadsheet, 0);
+        if (numOfCalendar != 0) {
+            gsheet.deleteSheet(spreadsheet, 0);
+        }
         logger.info("Succeeded! {} events exported from {} Calendar(s) to the Spreadsheet '{}' in Google Drive.", numOfEvents, numOfCalendar, spreadsheetTitle);
     }
 
